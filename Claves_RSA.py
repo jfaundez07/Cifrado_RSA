@@ -53,23 +53,6 @@ def generate_e(phi_n: int) -> int:
         if myAm.coprimos(e, phi_n):
             return e
 
-p = generate_prime(8)
-q = generate_prime(8)
-n = p * q
-phi_n = (p-1) * (q-1) # Euler's totient function
-# https://www.uninorte.edu.co/documents/13942513/27035260/prueba-IV-problemas-grupales-2015.pdf/ce8be0d1-9570-183c-fdd8-3b88c4620fb3?t=1654881264146
-e = generate_e(phi_n)
-d = myAm.inversoModular(e, phi_n)
-
-print('\n------------')
-print('Claves RSA: ')
-print(f'numero primo <p>           : {p}')
-print(f'numero primo <q>           : {q}')
-print(f'n = p*q                    : {n}')
-print(f'totiente Euler -> phi_n    : {phi_n}')
-print(f'entero coprimo <e>         : {e}')
-print(f'inverso multiplicativo <d> : {d}')
-
 # 2. **Cifrado de Mensajes:**
 
 def string_to_numbers(s: str):
@@ -90,12 +73,6 @@ def encrypt_message(message: str, e, n):
         encrypted_blocks.append(encrypt_block(num, e, n))
     return encrypted_blocks
 
-print("\n-----------------------------------------")
-message = input('Ingrese el mensaje a cifrar: ')
-encrypted_message = encrypt_message(message, e, n)
-print('Mensaje cifrado: ')
-print(encrypted_message)
-
 # 3. **Descifrado de Mensajes:**
 
 def numbers_to_string(numbers):
@@ -112,11 +89,6 @@ def decrypt_message(encrypted_blocks, d, n): # encrypted_blocks is the list that
     for block in encrypted_blocks:
         decrypted_blocks.append(decrypt_block(block, d, n))
     return numbers_to_string(decrypted_blocks)
-
-print("\n-----------------------------------------")
-decrypted_message = decrypt_message(encrypted_message, d, n)
-print('Mensaje descifrado: ')
-print(decrypted_message)
 
 # 4. **Optimización con el Teorema del Resto Chino (CRT):**
 
@@ -138,7 +110,40 @@ def crt_decrypt_message(encrypted_blocks, d, p, q):
         decrypted_numbers.append(crt_decrypt_block(block, d, p, q))
     return numbers_to_string(decrypted_numbers)
 
-print("\n-----------------------------------------")
-crt_decrypted_message = crt_decrypt_message(encrypted_message, d, p, q)
-print('Mensaje descifrado con CRT: ')
-print(crt_decrypted_message)
+# 5. Menu
+
+def menu():
+    try:
+        print("Menú Principal")
+        p = generate_prime(8)
+        q = generate_prime(8)
+        n = p * q
+        phi_n = (p-1) * (q-1) # Euler's totient function
+        # https://www.uninorte.edu.co/documents/13942513/27035260/prueba-IV-problemas-grupales-2015.pdf/ce8be0d1-9570-183c-fdd8-3b88c4620fb3?t=1654881264146
+        e = generate_e(phi_n)
+        d = myAm.inversoModular(e, phi_n)
+
+        print('\n-----------------------------------------')
+        print('Claves RSA: ')
+        print(f'numero primo <p>           : {p}')
+        print(f'numero primo <q>           : {q}')
+        print(f'n = p*q                    : {n}')
+        print(f'totiente Euler -> phi_n    : {phi_n}')
+        print(f'entero coprimo <e>         : {e}')
+        print(f'inverso multiplicativo <d> : {d}')
+
+        print('\n-----------------------------------------')
+        message = input('Ingrese el mensaje a cifrar: ')
+        encrypted_message = encrypt_message(message, e, n)
+        print('Mensaje cifrado: ')
+        print(encrypted_message)
+
+        print('\n-----------------------------------------')
+        crt_decrypted_message = crt_decrypt_message(encrypted_message, d, p, q)
+        print('Mensaje descifrado con CRT: ')
+        print(crt_decrypted_message)
+        
+    except Exception as e:
+        print(f'Error: {e}')    
+
+menu()
